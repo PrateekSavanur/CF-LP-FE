@@ -29,10 +29,12 @@ function LandingPage() {
           <button
             onClick={() => {
               const element = document.getElementById("how-it-works");
-              element.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
+              if (element) {
+                element.scrollIntoView({
+                  behavior: "smooth",
+                  block: "start",
+                });
+              }
             }}
             className="bg-transparent border-2 border-white text-lg font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-white hover:text-gray-900 transition-all transform hover:scale-105"
           >
