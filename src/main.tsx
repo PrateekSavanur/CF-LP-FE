@@ -9,6 +9,10 @@ import { config } from "./Web3Helpers/wagmi.ts";
 
 import "./index.css";
 
+declare module globalThis {
+  let Buffer: typeof import("buffer").Buffer;
+}
+
 globalThis.Buffer = Buffer;
 
 const queryClient = new QueryClient();
