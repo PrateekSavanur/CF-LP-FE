@@ -10,7 +10,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/CF-LP-FE" element={<LandingPage />} />
           <Route path="/projects" element={<Project />} />
           <Route path="/create-project" element={<CreateProject />} />
         </Routes>

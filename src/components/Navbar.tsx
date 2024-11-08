@@ -18,7 +18,7 @@ function Navbar() {
           {/* Logo and Title */}
           <div
             onClick={() => {
-              navigate("/");
+              navigate("/CF-LP-FE");
             }}
             className="text-xl font-bold text-white tracking-wide cursor-pointer"
           >
