@@ -8,8 +8,8 @@ const projectsData = [
     title: "Eco-Friendly Solar Panels",
     description:
       "Help fund the next generation of eco-friendly solar panels that reduce environmental impact.",
-    goal: "50 ETH",
-    raised: "35 ETH",
+    liquidity: "100 ETH",
+    tokenSupply: "5000 Tokens",
     image:
       "https://images.unsplash.com/photo-1719937206300-fc0dac6f8cac?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
@@ -18,8 +18,8 @@ const projectsData = [
     title: "Clean Water Initiative",
     description:
       "Providing clean water to communities in need through sustainable methods.",
-    goal: "30 ETH",
-    raised: "22 ETH",
+    liquidity: "50 ETH",
+    tokenSupply: "3000 Tokens",
     image:
       "https://images.unsplash.com/photo-1719937206300-fc0dac6f8cac?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
@@ -28,8 +28,8 @@ const projectsData = [
     title: "Education for All",
     description:
       "Support education for underprivileged children by funding local schools.",
-    goal: "40 ETH",
-    raised: "10 ETH",
+    liquidity: "30 ETH",
+    tokenSupply: "1000 Tokens",
     image:
       "https://images.unsplash.com/photo-1719937206300-fc0dac6f8cac?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
@@ -38,8 +38,8 @@ const projectsData = [
     title: "Wildlife Conservation",
     description:
       "Protect endangered species around the world with conservation efforts.",
-    goal: "70 ETH",
-    raised: "50 ETH",
+    liquidity: "120 ETH",
+    tokenSupply: "8000 Tokens",
     image:
       "https://images.unsplash.com/photo-1719937206300-fc0dac6f8cac?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
@@ -101,20 +101,10 @@ function ProjectsPage() {
               <h3 className="text-2xl font-bold mb-2">{project.title}</h3>
               <p className="text-gray-300 mb-4">{project.description}</p>
               <div className="mb-4">
-                <p className="text-gray-400">Goal: {project.goal}</p>
-                <p className="text-gray-400">Raised: {project.raised}</p>
-                <div className="w-full bg-gray-600 rounded-full mt-2">
-                  <div
-                    className="bg-blue-500 h-2.5 rounded-full"
-                    style={{
-                      width: `${
-                        (parseFloat(project.raised) /
-                          parseFloat(project.goal)) *
-                        100
-                      }%`,
-                    }}
-                  ></div>
-                </div>
+                <p className="text-gray-400">Liquidity: {project.liquidity}</p>
+                <p className="text-gray-400">
+                  Token Supply: {project.tokenSupply}
+                </p>
               </div>
               <button className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 mt-4 rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 transition-colors">
                 View Details

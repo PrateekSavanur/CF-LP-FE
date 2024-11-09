@@ -2,32 +2,25 @@ import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { getAccount } from "@wagmi/core";
-import abi from "../Web3Helpers/ABI";
-import { config } from "../Web3Helpers/wagmi";
 import { ethers } from "ethers";
+import { config } from "../Web3Helpers/wagmi";
+import swapAbi from "../Web3Helpers/ABI"; // Import your contract ABI
+import { getAccount } from "wagmi/actions";
 
-function CreateProject() {
-  const [projectData, setProjectData] = useState({
-    name: "",
-    symbol: "",
-    initialSupply: "",
-    ethLiquidity: "",
-    imageUrl: "",
+function SwapTokens() {
+  const [swapData, setSwapData] = useState({
+    fromToken: "",
+    amount: "",
+    minEthOut: "", // Minimum ETH output for slippage protection
   });
+
   const { data: hash, writeContract } = useWriteContract();
   const account = getAccount(config);
 
   const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
 
-  const createProject = async () => {
-    if (
-      !projectData.name ||
-      !projectData.symbol ||
-      !projectData.initialSupply ||
-      !projectData.ethLiquidity ||
-      !projectData.imageUrl
-    ) {
+  const handleSwap = async () => {
+    if (!swapData.fromToken || !swapData.amount || !swapData.minEthOut) {
       toast("Please fill in all fields ⚠️", {
         position: "top-right",
         autoClose: 5000,
@@ -56,21 +49,20 @@ function CreateProject() {
     }
 
     try {
+      // Call the swapTokensForETH function from your smart contract
       writeContract({
-        address: "0xYourCrowdfundingContractAddress",
-        abi,
-        functionName: "createProject",
+        address: "0xYourCrowdfundingPlatformAddress", // Replace with your actual contract address
+        abi: swapAbi,
+        functionName: "swapTokensForETH",
         args: [
-          projectData.name,
-          projectData.symbol,
-          ethers.parseUnits(projectData.initialSupply, 18),
-          ethers.parseEther(projectData.ethLiquidity),
-          projectData.imageUrl,
+          swapData.fromToken,
+          ethers.parseUnits(swapData.amount, 18), // Convert token amount to proper decimals
+          ethers.parseUnits(swapData.minEthOut, 18), // Minimum ETH output
         ],
       });
     } catch (error) {
-      console.error("Error creating project:", error);
-      toast("Failed to create project ⚠️", {
+      console.error("Error swapping tokens:", error);
+      toast("Failed to swap tokens ⚠️", {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -84,97 +76,63 @@ function CreateProject() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 mt-[10vh]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4">
       <h1 className="text-4xl font-extrabold text-white mb-8">
-        Create a New Crowdfunding Project
+        Swap Tokens for ETH
       </h1>
 
       <div className="w-full max-w-lg bg-gray-800 shadow-xl rounded-lg p-8 space-y-6">
         <div className="space-y-4">
           <div className="flex flex-col">
             <label className="text-lg font-semibold text-gray-300 mb-2">
-              Project Name
+              Token Address
             </label>
             <input
               type="text"
-              value={projectData.name}
+              value={swapData.fromToken}
               onChange={(e) =>
-                setProjectData({ ...projectData, name: e.target.value })
+                setSwapData({ ...swapData, fromToken: e.target.value })
               }
               className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-purple-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter project name"
+              placeholder="Enter token address"
               required
             />
           </div>
 
           <div className="flex flex-col">
             <label className="text-lg font-semibold text-gray-300 mb-2">
-              Symbol
-            </label>
-            <input
-              type="text"
-              value={projectData.symbol}
-              onChange={(e) =>
-                setProjectData({ ...projectData, symbol: e.target.value })
-              }
-              className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-purple-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter symbol"
-              required
-            />
-          </div>
-
-          <div className="flex flex-col">
-            <label className="text-lg font-semibold text-gray-300 mb-2">
-              Initial Supply
+              Amount
             </label>
             <input
               type="number"
-              value={projectData.initialSupply}
+              value={swapData.amount}
               onChange={(e) =>
-                setProjectData({
-                  ...projectData,
-                  initialSupply: e.target.value,
-                })
+                setSwapData({ ...swapData, amount: e.target.value })
               }
               className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-teal-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter initial supply"
+              placeholder="Enter amount to swap"
               required
             />
           </div>
 
           <div className="flex flex-col">
             <label className="text-lg font-semibold text-gray-300 mb-2">
-              ETH for Liquidity
+              Min ETH Out
             </label>
             <input
               type="number"
-              value={projectData.ethLiquidity}
+              value={swapData.minEthOut}
               onChange={(e) =>
-                setProjectData({ ...projectData, ethLiquidity: e.target.value })
+                setSwapData({ ...swapData, minEthOut: e.target.value })
               }
               className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-teal-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter ETH for liquidity"
-              required
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-lg font-semibold text-gray-300 mb-2">
-              Image Url
-            </label>
-            <input
-              type="text"
-              value={projectData.imageUrl}
-              onChange={(e) =>
-                setProjectData({ ...projectData, name: e.target.value })
-              }
-              className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-purple-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter project name"
+              placeholder="Enter minimum ETH output"
               required
             />
           </div>
 
           <button
-            onClick={createProject}
+            onClick={handleSwap}
             disabled={isConfirming}
             className={`w-full py-3 rounded-lg font-semibold text-white ${
               isConfirming
@@ -182,7 +140,7 @@ function CreateProject() {
                 : "bg-gradient-to-r from-purple-500 to-teal-500 hover:from-purple-600 hover:to-teal-600"
             } transition duration-300 ease-in-out`}
           >
-            {isConfirming ? "Creating Project..." : "Create Project"}
+            {isConfirming ? "Swapping..." : "Swap Tokens for ETH"}
           </button>
         </div>
         <ToastContainer />
@@ -191,4 +149,4 @@ function CreateProject() {
   );
 }
 
-export default CreateProject;
+export default SwapTokens;
