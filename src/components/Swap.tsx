@@ -1,77 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { ethers } from "ethers";
 import { config } from "../Web3Helpers/wagmi";
-import swapAbi from "../Web3Helpers/ABI"; // Import your contract ABI
+import swapAbi from "../Web3Helpers/ABI";
+import erc20Abi from "../Web3Helpers/ERC20_ABI";
 import { getAccount } from "wagmi/actions";
 
 function SwapTokens() {
   const [swapData, setSwapData] = useState({
     fromToken: "",
     amount: "",
-    minEthOut: "", // Minimum ETH output for slippage protection
+    minEthOut: "",
   });
 
-  const { data: hash, writeContract } = useWriteContract();
+  const { writeContract: approveWrite, data: approveHash } = useWriteContract();
+  const { writeContract: swapWrite } = useWriteContract();
+  const { isLoading: isApproving, isSuccess: isApproved } =
+    useWaitForTransactionReceipt({ hash: approveHash });
+
   const account = getAccount(config);
 
-  const { isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
+  useEffect(() => {
+    if (isApproved) {
+      handleSwap();
+    }
+  }, [isApproved]);
 
-  const handleSwap = async () => {
+  const handleApprove = async () => {
     if (!swapData.fromToken || !swapData.amount || !swapData.minEthOut) {
-      toast("Please fill in all fields ⚠️", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast("Please fill in all fields ⚠️", { theme: "dark" });
       return;
     }
 
     if (!account.address) {
-      toast("Please connect your wallet ⚠️", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      toast("Please connect your wallet ⚠️", { theme: "dark" });
       return;
     }
 
     try {
-      // Call the swapTokensForETH function from your smart contract
-      writeContract({
-        address: "0xYourCrowdfundingPlatformAddress", // Replace with your actual contract address
+      // Approve contract to transfer tokens on behalf of the user
+      approveWrite({
+        address: swapData.fromToken as `0x${string}`, // Token address
+        abi: erc20Abi,
+        functionName: "approve",
+        args: [
+          "0xYourCrowdfundingPlatformAddress",
+          ethers.parseUnits(swapData.amount, 18),
+        ],
+      });
+      toast("Approval transaction sent!", { theme: "dark" });
+    } catch (error) {
+      console.error("Approval error:", error);
+      toast("Failed to approve token transfer ⚠️", { theme: "dark" });
+    }
+  };
+
+  const handleSwap = async () => {
+    try {
+      swapWrite({
+        address: "0xYourCrowdfundingPlatformAddress",
         abi: swapAbi,
         functionName: "swapTokensForETH",
         args: [
           swapData.fromToken,
-          ethers.parseUnits(swapData.amount, 18), // Convert token amount to proper decimals
-          ethers.parseUnits(swapData.minEthOut, 18), // Minimum ETH output
+          ethers.parseUnits(swapData.amount, 18),
+          ethers.parseUnits(swapData.minEthOut, 18),
         ],
       });
+      toast("Swap transaction sent!", { theme: "dark" });
     } catch (error) {
-      console.error("Error swapping tokens:", error);
-      toast("Failed to swap tokens ⚠️", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      console.error("Swap error:", error);
+      toast("Failed to swap tokens ⚠️", { theme: "dark" });
     }
   };
 
@@ -132,15 +133,15 @@ function SwapTokens() {
           </div>
 
           <button
-            onClick={handleSwap}
-            disabled={isConfirming}
+            onClick={handleApprove}
+            disabled={isApproving || isApproved}
             className={`w-full py-3 rounded-lg font-semibold text-white ${
-              isConfirming
+              isApproving || isApproved
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-500 to-teal-500 hover:from-purple-600 hover:to-teal-600"
             } transition duration-300 ease-in-out`}
           >
-            {isConfirming ? "Swapping..." : "Swap Tokens for ETH"}
+            {isApproving ? "Approving..." : isApproved ? "Approved" : "Approve"}
           </button>
         </div>
         <ToastContainer />

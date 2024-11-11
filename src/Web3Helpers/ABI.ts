@@ -20,6 +20,31 @@ const abi = [
         "inputs": [
             {
                 "indexed": false,
+                "internalType": "uint256",
+                "name": "projectIndex",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "creator",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "FundsWithdrawn",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
                 "internalType": "string",
                 "name": "name",
                 "type": "string"
@@ -63,7 +88,17 @@ const abi = [
         "inputs": [
             {
                 "internalType": "string",
-                "name": "_name",
+                "name": "_title",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_description",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_tokenName",
                 "type": "string"
             },
             {
@@ -80,6 +115,11 @@ const abi = [
                 "internalType": "uint256",
                 "name": "ethForLiquidity",
                 "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "_imageURL",
+                "type": "string"
             }
         ],
         "name": "createProject",
@@ -112,6 +152,19 @@ const abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getProjectCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -123,7 +176,12 @@ const abi = [
         "outputs": [
             {
                 "internalType": "string",
-                "name": "name",
+                "name": "title",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "description",
                 "type": "string"
             },
             {
@@ -150,6 +208,11 @@ const abi = [
                 "internalType": "uint256",
                 "name": "totalSupply",
                 "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "imageURL",
+                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -208,6 +271,19 @@ const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "projectIndex",
+                "type": "uint256"
+            }
+        ],
+        "name": "withdrawFunds",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     }
 ]

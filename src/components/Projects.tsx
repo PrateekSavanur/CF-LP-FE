@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { FiSearch } from "react-icons/fi"; // Importing a search icon from react-icons
+import { useState, useEffect } from "react";
+import { FiSearch } from "react-icons/fi";
+import { getAllProjects } from "../Web3Helpers/contractFuntions";
 
-// Sample project data for demonstration
 const projectsData = [
   {
     id: 1,
@@ -45,12 +45,50 @@ const projectsData = [
   },
 ];
 
+interface Project {
+  id: number;
+  title: string;
+  description: string;
+  liquidity: string;
+  tokenSupply: string;
+  image: string;
+}
+
 function ProjectsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProjects, setFilteredProjects] = useState(projectsData);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [contributionAmount, setContributionAmount] = useState("");
+  const [ethToUsdRate, setEthToUsdRate] = useState<number | null>(null);
+
+  getAllProjects();
+
+  // Fetch the ETH/USD exchange rate
+  useEffect(() => {
+    const fetchEthToUsdRate = async () => {
+      try {
+        const response = await fetch(
+          "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+        );
+        const data = await response.json();
+        setEthToUsdRate(data.ethereum.usd);
+      } catch (error) {
+        console.error("Error fetching ETH to USD rate:", error);
+      }
+    };
+
+    fetchEthToUsdRate();
+  }, []);
+
+  // Calculate the equivalent dollar amount
+  const dollarAmount =
+    ethToUsdRate && contributionAmount
+      ? (parseFloat(contributionAmount) * ethToUsdRate).toFixed(2)
+      : "0.00";
 
   // Function to handle search input changes
-  const handleSearch = (event: { target: { value: any } }) => {
+  const handleSearch = (event: { target: { value: string } }) => {
     const value = event.target.value;
     setSearchTerm(value);
 
@@ -61,6 +99,23 @@ function ProjectsPage() {
     );
 
     setFilteredProjects(filtered);
+  };
+
+  // Function to handle opening the modal with project details
+  const handleViewDetails = (project: Project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+  };
+
+  // Function to handle closing the modal
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setContributionAmount("");
+  };
+
+  // Function to handle contributing to the project
+  const handleContribute = () => {
+    handleCloseModal();
   };
 
   return (
@@ -86,6 +141,7 @@ function ProjectsPage() {
         </div>
       </div>
 
+      {/* Projects List */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredProjects.map((project) => (
           <div
@@ -106,13 +162,54 @@ function ProjectsPage() {
                   Token Supply: {project.tokenSupply}
                 </p>
               </div>
-              <button className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 mt-4 rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 transition-colors">
+              <button
+                onClick={() => handleViewDetails(project)}
+                className="w-full bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold py-2 mt-4 rounded-lg shadow-md hover:from-green-500 hover:to-blue-600 transition-colors"
+              >
                 View Details
               </button>
             </div>
           </div>
         ))}
       </div>
+
+      {/* Modal for Contribution */}
+      {isModalOpen && selectedProject && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-gray-900 rounded-lg p-6 w-full max-w-md">
+            <h3 className="text-2xl font-bold mb-4 text-center">
+              Contribute to {selectedProject.title}
+            </h3>
+            <p className="text-gray-300 mb-4">{selectedProject.description}</p>
+            <input
+              type="number"
+              value={contributionAmount}
+              onChange={(e) => setContributionAmount(e.target.value)}
+              placeholder="Enter amount in ETH"
+              className="w-full py-2 px-4 rounded-lg mb-4 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            {ethToUsdRate !== null && (
+              <p className="text-gray-400 mb-4">
+                Equivalent in USD: ${dollarAmount}
+              </p>
+            )}
+            <div className="flex justify-between">
+              <button
+                onClick={handleCloseModal}
+                className="px-4 py-2 bg-red-500 rounded-lg text-white hover:bg-red-600"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleContribute}
+                className="px-4 py-2 bg-green-500 rounded-lg text-white hover:bg-green-600"
+              >
+                Contribute
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

@@ -18,7 +18,7 @@ function Navbar() {
           {/* Logo and Title */}
           <div
             onClick={() => {
-              navigate("/");
+              navigate("/CF-LP-FE");
             }}
             className="text-xl font-bold text-white tracking-wide cursor-pointer"
           >
@@ -50,19 +50,19 @@ function Navbar() {
             <div className="absolute top-16 left-0 right-0 bg-gray-800 shadow-lg z-20">
               <nav className="flex flex-col items-center gap-4 p-4">
                 <button
-                  onClick={() => navigate("/projects")}
+                  onClick={() => navigate("/CF-LP-FE/projects")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Projects
                 </button>
                 <button
-                  onClick={() => navigate("/create-project")}
+                  onClick={() => navigate("/CF-LP-FE/create-project")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Create Project
                 </button>
                 <button
-                  onClick={() => navigate("/swap")}
+                  onClick={() => navigate("//CF-LP-FE/swap")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Swap
