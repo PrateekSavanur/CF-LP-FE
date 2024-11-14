@@ -18,7 +18,7 @@ function Navbar() {
           {/* Logo and Title */}
           <div
             onClick={() => {
-              navigate("/CF-LP-FE");
+              navigate("/");
             }}
             className="text-xl font-bold text-white tracking-wide cursor-pointer"
           >
@@ -50,19 +50,19 @@ function Navbar() {
             <div className="absolute top-16 left-0 right-0 bg-gray-800 shadow-lg z-20">
               <nav className="flex flex-col items-center gap-4 p-4">
                 <button
-                  onClick={() => navigate("/CF-LP-FE/projects")}
+                  onClick={() => navigate("/projects")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Projects
                 </button>
                 <button
-                  onClick={() => navigate("/CF-LP-FE/create-project")}
+                  onClick={() => navigate("/create-project")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Create Project
                 </button>
                 <button
-                  onClick={() => navigate("/CF-LP-FE/swap")}
+                  onClick={() => navigate("/swap")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Swap
@@ -122,19 +122,19 @@ function Navbar() {
           <div className="items-center gap-6 hidden md:flex">
             <nav className="flex gap-4">
               <button
-                onClick={() => navigate("/CF-LP-FE/projects")}
+                onClick={() => navigate("/projects")}
                 className="text-white font-medium hover:text-blue-400"
               >
                 Projects
               </button>
               <button
-                onClick={() => navigate("/CF-LP-FE/create-project")}
+                onClick={() => navigate("/create-project")}
                 className="text-white font-medium hover:text-blue-400"
               >
                 Create Project
               </button>
               <button
-                onClick={() => navigate("/CF-LP-FE/swap")}
+                onClick={() => navigate("/swap")}
                 className="text-white font-medium hover:text-blue-400"
               >
                 Swap

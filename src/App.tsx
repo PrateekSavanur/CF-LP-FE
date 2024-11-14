@@ -11,10 +11,10 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/CF-LP-FE/" element={<LandingPage />} />
-          <Route path="/CF-LP-FE/projects" element={<Project />} />
-          <Route path="/CF-LP-FE/create-project" element={<CreateProject />} />
-          <Route path="/CF-LP-FE/swap" element={<Swap />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/projects" element={<Project />} />
+          <Route path="/create-project" element={<CreateProject />} />
+          <Route path="/swap" element={<Swap />} />
         </Routes>
       </Router>
     </>
