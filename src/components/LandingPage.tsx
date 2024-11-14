@@ -3,10 +3,6 @@ import { useNavigate } from "react-router-dom";
 function LandingPage() {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate("/projects");
-  };
-
   return (
     <div className="bg-gray-900 text-white font-sans mt-[5vh] md:mt-[10vh]">
       {/* Hero Section */}
@@ -22,7 +18,7 @@ function LandingPage() {
         <div className="mt-8 flex gap-4 relative z-10">
           <button
             className="bg-green-500 text-lg font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105"
-            onClick={handleClick}
+            onClick={() => navigate("/projects")}
           >
             Get Started
           </button>
@@ -254,7 +250,7 @@ function LandingPage() {
           Support meaningful projects with full transparency.
         </p>
         <button
-          onClick={handleClick}
+          onClick={() => navigate("/projects")}
           className="mt-8 bg-green-500 text-lg font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-green-600 transition-transform transform hover:scale-105 relative z-10"
         >
           Get Started
