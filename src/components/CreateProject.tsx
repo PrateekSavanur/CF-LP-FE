@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { writeContract } from "@wagmi/core";
-import { getAccount } from "@wagmi/core";
+import { writeContract, getAccount } from "@wagmi/core";
 import abi from "../Web3Helpers/ABI";
+import { useBalance } from "wagmi";
 import { config } from "../Web3Helpers/wagmi";
-import { ethers } from "ethers";
+import { parseEther } from "viem";
 
 function CreateProject() {
   const [projectData, setProjectData] = useState({
@@ -13,13 +13,22 @@ function CreateProject() {
     description: "",
     tokenName: "",
     symbol: "",
-    initialSupply: "",
+    initialSupply: 0,
     ethLiquidity: "",
     imageUrl: "",
   });
+
   const account = getAccount(config);
+  const res = useBalance({
+    address: account.address,
+    chainId: 11155111,
+  });
 
   const createProject = async () => {
+    console.log(account.address);
+
+    console.log(res.data);
+
     if (
       !projectData.title ||
       !projectData.description ||
@@ -58,24 +67,24 @@ function CreateProject() {
 
     try {
       console.log("Writing contract now");
-      let args = [
-        projectData.title,
-        projectData.description,
-        projectData.tokenName,
-        projectData.symbol,
-        BigInt(projectData.initialSupply),
-        ethers.parseEther(projectData.ethLiquidity),
-        projectData.imageUrl,
-      ];
-      console.log(args);
+
+      let value = projectData.ethLiquidity;
+      console.log(typeof value);
 
       writeContract(config, {
         abi,
-        address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+        address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
         functionName: "createProject",
-        args,
-        value: ethers.parseEther(projectData.ethLiquidity),
-        gasPrice: BigInt(30000), // Reasonable gas limit for the transaction
+        args: [
+          projectData.title,
+          projectData.description,
+          projectData.tokenName,
+          projectData.symbol,
+          projectData.initialSupply,
+          parseEther(projectData.ethLiquidity),
+          projectData.imageUrl,
+        ],
+        value: parseEther(projectData.ethLiquidity),
       });
     } catch (error) {
       console.error("Error creating project:", error);
@@ -93,7 +102,7 @@ function CreateProject() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 mt-[10vh]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 mt-[2vh] md:mt-[10vh]">
       <h1 className="text-4xl font-extrabold text-white mb-8">
         Create a New Crowdfunding Project
       </h1>
@@ -174,7 +183,7 @@ function CreateProject() {
               onChange={(e) =>
                 setProjectData({
                   ...projectData,
-                  initialSupply: e.target.value,
+                  initialSupply: e.target.valueAsNumber,
                 })
               }
               className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-teal-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
@@ -189,15 +198,21 @@ function CreateProject() {
             </label>
             <input
               type="number"
+              step="any"
+              min="0"
               value={projectData.ethLiquidity}
-              onChange={(e) =>
-                setProjectData({ ...projectData, ethLiquidity: e.target.value })
-              }
+              onChange={(e) => {
+                setProjectData({
+                  ...projectData,
+                  ethLiquidity: e.target.value,
+                });
+              }}
               className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-teal-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
               placeholder="Enter ETH for liquidity"
               required
             />
           </div>
+
           <div className="flex flex-col">
             <label className="text-lg font-semibold text-gray-300 mb-2">
               Image Url

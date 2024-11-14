@@ -7,6 +7,7 @@ import { config } from "../Web3Helpers/wagmi";
 import swapAbi from "../Web3Helpers/ABI";
 import erc20Abi from "../Web3Helpers/ERC20_ABI";
 import { getAccount } from "wagmi/actions";
+import { parseEther } from "viem";
 
 function SwapTokens() {
   const [swapData, setSwapData] = useState({
@@ -17,16 +18,24 @@ function SwapTokens() {
 
   const { writeContract: approveWrite, data: approveHash } = useWriteContract();
   const { writeContract: swapWrite } = useWriteContract();
-  const { isLoading: isApproving, isSuccess: isApproved } =
-    useWaitForTransactionReceipt({ hash: approveHash });
 
   const account = getAccount(config);
+
+  const {
+    isLoading: isApproving,
+    isSuccess: isApproved,
+    isError: isApproveError,
+  } = useWaitForTransactionReceipt({
+    hash: approveHash,
+  });
 
   useEffect(() => {
     if (isApproved) {
       handleSwap();
+    } else if (isApproveError) {
+      toast.error("Approval failed! Please try again.", { theme: "dark" });
     }
-  }, [isApproved]);
+  }, [isApproved, isApproveError]);
 
   const handleApprove = async () => {
     if (!swapData.fromToken || !swapData.amount || !swapData.minEthOut) {
@@ -46,8 +55,8 @@ function SwapTokens() {
         abi: erc20Abi,
         functionName: "approve",
         args: [
-          "0xYourCrowdfundingPlatformAddress",
-          ethers.parseUnits(swapData.amount, 18),
+          "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+          parseEther(swapData.amount),
         ],
       });
       toast("Approval transaction sent!", { theme: "dark" });
@@ -60,13 +69,13 @@ function SwapTokens() {
   const handleSwap = async () => {
     try {
       swapWrite({
-        address: "0xYourCrowdfundingPlatformAddress",
+        address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
         abi: swapAbi,
         functionName: "swapTokensForETH",
         args: [
           swapData.fromToken,
-          ethers.parseUnits(swapData.amount, 18),
-          ethers.parseUnits(swapData.minEthOut, 18),
+          parseEther(swapData.amount),
+          parseEther(swapData.minEthOut),
         ],
       });
       toast("Swap transaction sent!", { theme: "dark" });
@@ -77,7 +86,7 @@ function SwapTokens() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 md:mt-[8vh]">
       <h1 className="text-4xl font-extrabold text-white mb-8">
         Swap Tokens for ETH
       </h1>
@@ -143,7 +152,20 @@ function SwapTokens() {
           >
             {isApproving ? "Approving..." : isApproved ? "Approved" : "Approve"}
           </button>
+
+          <button
+            onClick={handleSwap}
+            disabled={isApproving || !isApproved}
+            className={`w-full py-3 rounded-lg font-semibold text-white ${
+              isApproving || !isApproved
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-gradient-to-r from-purple-500 to-teal-500 hover:from-purple-600 hover:to-teal-600"
+            } transition duration-300 ease-in-out`}
+          >
+            Swap Tokens
+          </button>
         </div>
+
         <ToastContainer />
       </div>
     </div>

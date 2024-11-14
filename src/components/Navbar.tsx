@@ -62,7 +62,7 @@ function Navbar() {
                   Create Project
                 </button>
                 <button
-                  onClick={() => navigate("//CF-LP-FE/swap")}
+                  onClick={() => navigate("/CF-LP-FE/swap")}
                   className="text-white font-medium hover:text-blue-400"
                 >
                   Swap
@@ -122,19 +122,19 @@ function Navbar() {
           <div className="items-center gap-6 hidden md:flex">
             <nav className="flex gap-4">
               <button
-                onClick={() => navigate("/projects")}
+                onClick={() => navigate("/CF-LP-FE/projects")}
                 className="text-white font-medium hover:text-blue-400"
               >
                 Projects
               </button>
               <button
-                onClick={() => navigate("/create-project")}
+                onClick={() => navigate("/CF-LP-FE/create-project")}
                 className="text-white font-medium hover:text-blue-400"
               >
                 Create Project
               </button>
               <button
-                onClick={() => navigate("/swap")}
+                onClick={() => navigate("/CF-LP-FE/swap")}
                 className="text-white font-medium hover:text-blue-400"
               >
                 Swap
