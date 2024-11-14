@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { ethers } from "ethers";
 import { config } from "../Web3Helpers/wagmi";
 import swapAbi from "../Web3Helpers/ABI";
 import erc20Abi from "../Web3Helpers/ERC20_ABI";
