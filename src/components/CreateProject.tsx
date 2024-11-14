@@ -73,7 +73,7 @@ function CreateProject() {
 
       writeContract(config, {
         abi,
-        address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+        address: "0x64d669396464227E00653E2235272a0Ba6A67843",
         functionName: "createProject",
         args: [
           projectData.title,

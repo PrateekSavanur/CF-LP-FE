@@ -20,7 +20,7 @@ interface Project {
 export const getAllProjects: any = async () => {
     const result = await readContract(config, {
         abi,
-        address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+        address: "0x64d669396464227E00653E2235272a0Ba6A67843",
         functionName: "getProjectCount"
     }) as BigInt
 
@@ -29,7 +29,7 @@ export const getAllProjects: any = async () => {
     for (let i = 0; i < Number(result); i++) {
         const projectIndividual = await readContract(config, {
             abi,
-            address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
             functionName: "projects",
             args: [i]
         }) as unknown
@@ -61,7 +61,7 @@ export const withdrawFunds = async (selectedprojectId: number) => {
     try {
         await writeContract(config, {
             abi,
-            address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
             functionName: "withdrawFunds",
             args: [selectedprojectId]
         });
@@ -79,7 +79,7 @@ export const contribute = async (
     try {
         await writeContract(config, {
             abi: abi,
-            address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
             functionName: "contribute",
             args: [selectedprojectId],
             value: parseEther(contributionAmount),
@@ -95,7 +95,7 @@ export const swap = async () => {
     try {
         await writeContract(config, {
             abi: abi,
-            address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
             functionName: "swapTokensForETH",
             args: [],
         })

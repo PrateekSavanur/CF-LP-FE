@@ -55,7 +55,7 @@ function SwapTokens() {
         abi: erc20Abi,
         functionName: "approve",
         args: [
-          "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+          "0x64d669396464227E00653E2235272a0Ba6A67843",
           parseEther(swapData.amount),
         ],
       });
@@ -69,7 +69,7 @@ function SwapTokens() {
   const handleSwap = async () => {
     try {
       swapWrite({
-        address: "0x1B2aFfD1a9eb1198F7f884C1388702b29246a4bE",
+        address: "0x64d669396464227E00653E2235272a0Ba6A67843",
         abi: swapAbi,
         functionName: "swapTokensForETH",
         args: [
