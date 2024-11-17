@@ -7,7 +7,7 @@ export const config = createConfig({
   connectors: [
     injected(),
     coinbaseWallet(),
-    walletConnect({ projectId: "7ed975826af460eba1103fb3719f68b2" }),
+    // walletConnect({ projectId: "7ed975826af460eba1103fb3719f68b2" }),
   ],
   transports: {
     [mainnet.id]: http(
