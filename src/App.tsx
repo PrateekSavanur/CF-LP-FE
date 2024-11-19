@@ -8,7 +8,6 @@ import Swap from "./components/Swap";
 
 function App() {
   const [selectedChain, setSelectedChain] = useState<number>(1 || 111555111);
-  const [ipfsHash, setIpfsHash] = useState<string>("");
 
   return (
     <Router basename="/CF-LP-FE">

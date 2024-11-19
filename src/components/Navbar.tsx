@@ -26,7 +26,7 @@ function Navbar({ selectedChain, setSelectedChain }: NavbarProps) {
               <img
                 src={Logo}
                 alt="FundSphere Logo"
-                className="h-8 w-auto rounded-lg"
+                className="h-8 w-auto rounded-xl"
               />
               <div
                 onClick={() => {
