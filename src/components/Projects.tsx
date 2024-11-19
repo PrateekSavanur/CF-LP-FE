@@ -22,7 +22,11 @@ interface Project {
   tokenAddress: string;
 }
 
-function ProjectsPage() {
+interface ProjectProps {
+  selectedChain: number;
+}
+
+function ProjectsPage({ selectedChain }: ProjectProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
   const [filteredProjects, setFilteredProjects] = useState<Project[]>([]);
@@ -35,15 +39,17 @@ function ProjectsPage() {
   useEffect(() => {
     const getProjects = async () => {
       try {
-        const fetchedProjects = await getAllProjects();
+        const fetchedProjects = await getAllProjects(selectedChain); // Pass selectedChain here
         setProjects(fetchedProjects);
         setFilteredProjects(fetchedProjects);
       } catch (error) {
-        toast.error("Failed to load projects.");
+        toast.info("No projects found");
+        setProjects([]);
+        setFilteredProjects([]);
       }
     };
     getProjects();
-  }, []);
+  }, [selectedChain]); // Add selectedChain as a dependency
 
   useEffect(() => {
     const fetchEthToUsdRate = async () => {
@@ -111,7 +117,7 @@ function ProjectsPage() {
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen text-white mt-[5vh]">
+    <section className="py-20 px-6 bg-gradient-to-b from-gray-900 to-gray-800 min-h-screen text-white">
       <ToastContainer position="top-right" autoClose={3000} />
 
       <h2 className="text-5xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-green-400 pb-2">
@@ -142,7 +148,7 @@ function ProjectsPage() {
                 className="bg-gray-800 rounded-xl overflow-hidden shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
               >
                 <img
-                  src={project.image}
+                  src={`https://ipfs.io/ipfs/${project.image}`}
                   alt={project.title}
                   className="w-full h-48 object-cover"
                 />
@@ -222,27 +228,30 @@ function ProjectsPage() {
             <div className="flex justify-between items-center space-x-4 mt-8">
               <button
                 onClick={handleCloseModal}
-                className="flex-1 py-2 px-4 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition-colors"
+                className="flex-1 bg-gray-700 text-gray-300 font-semibold py-2 rounded-lg hover:bg-gray-600 transition-colors"
               >
-                Cancel
+                Close
               </button>
+
+              <button
+                onClick={handleWithdrawFunds}
+                disabled={selectedProject.owner !== address}
+                className={`flex-1 ${
+                  selectedProject.owner !== address
+                    ? "bg-gray-600 cursor-not-allowed text-gray-400"
+                    : "bg-red-500 hover:bg-red-600 text-white"
+                } font-semibold py-2 rounded-lg transition-colors`}
+              >
+                Withdraw Funds
+              </button>
+
               <button
                 onClick={handleContribute}
-                className="flex-1 py-2 px-4 rounded-lg bg-green-500 text-white font-semibold hover:bg-green-600 transition-colors"
+                className="flex-1 bg-green-500 text-white font-semibold py-2 rounded-lg hover:bg-green-600 transition-colors"
               >
                 Contribute
               </button>
             </div>
-            {address === selectedProject.owner && (
-              <div className="flex justify-center items-center pt-5">
-                <button
-                  onClick={handleWithdrawFunds}
-                  className="mt-2 py-2 px-4 rounded-lg bg-purple-500 text-white font-semibold hover:bg-purple-600 transition-colors"
-                >
-                  Withdraw Funds
-                </button>
-              </div>
-            )}
           </div>
         </div>
       )}

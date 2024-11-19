@@ -4,7 +4,7 @@ function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-gray-900 text-white font-sans mt-[5vh] md:mt-[10vh]">
+    <div className="bg-gray-900 text-white font-sans ">
       {/* Hero Section */}
       <section className="flex flex-col h-[90vh] items-center justify-center text-center py-20 px-4 bg-gradient-to-b from-blue-800 to-purple-600 relative overflow-hidden">
         <div className="absolute inset-0 bg-blue-900 opacity-50" />

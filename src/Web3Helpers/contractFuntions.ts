@@ -17,11 +17,14 @@ interface Project {
     imageUrl: string
 }
 
-export const getAllProjects: any = async () => {
+type chainId = 1 | 11155111
+
+export const getAllProjects: any = async (chainId: chainId) => {
     const result = await readContract(config, {
         abi,
         address: "0x64d669396464227E00653E2235272a0Ba6A67843",
-        functionName: "getProjectCount"
+        functionName: "getProjectCount",
+        chainId: chainId
     }) as BigInt
 
     let projects = []
@@ -31,7 +34,8 @@ export const getAllProjects: any = async () => {
             abi,
             address: "0x64d669396464227E00653E2235272a0Ba6A67843",
             functionName: "projects",
-            args: [i]
+            args: [i],
+            chainId: chainId
         }) as unknown
 
         const projectArray = projectIndividual as any[]

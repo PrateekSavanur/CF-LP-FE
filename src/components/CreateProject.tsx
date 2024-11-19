@@ -101,8 +101,18 @@ function CreateProject() {
     }
   };
 
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setProjectData({ ...projectData, imageUrl });
+
+      // Upload to ipfs
+    }
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 mt-[2vh] md:mt-[10vh]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 ">
       <h1 className="text-4xl font-extrabold text-white mb-8">
         Create a New Crowdfunding Project
       </h1>
@@ -215,18 +225,22 @@ function CreateProject() {
 
           <div className="flex flex-col">
             <label className="text-lg font-semibold text-gray-300 mb-2">
-              Image Url
+              Project Image
             </label>
             <input
-              type="text"
-              value={projectData.imageUrl}
-              onChange={(e) =>
-                setProjectData({ ...projectData, imageUrl: e.target.value })
-              }
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
               className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-purple-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter project name"
               required
             />
+            {projectData.imageUrl && (
+              <img
+                src={projectData.imageUrl}
+                alt="Preview"
+                className="mt-4 w-full max-h-48 object-cover rounded-lg"
+              />
+            )}
           </div>
 
           <button

@@ -85,7 +85,7 @@ function SwapTokens() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4 md:mt-[8vh]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4">
       <h1 className="text-4xl font-extrabold text-white mb-8">
         Swap Tokens for ETH
       </h1>
