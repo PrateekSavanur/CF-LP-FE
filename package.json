@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "env-cmd -f .env tsc && env-cmd -f .env.production vite build",
     "lint": "biome check .",
     "preview": "vite preview"
   },
@@ -31,6 +31,7 @@
     "@wagmi/cli": "latest",
     "autoprefixer": "^10.4.20",
     "buffer": "^6.0.3",
+    "env-cmd": "^10.1.0",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",
     "typescript": "^5.4.5",
