@@ -22,7 +22,7 @@ type chainId = 1 | 11155111
 export const getAllProjects: any = async (chainId: chainId) => {
     const result = await readContract(config, {
         abi,
-        address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+        address: "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C",
         functionName: "getProjectCount",
         chainId: chainId
     }) as BigInt
@@ -32,7 +32,7 @@ export const getAllProjects: any = async (chainId: chainId) => {
     for (let i = 0; i < Number(result); i++) {
         const projectIndividual = await readContract(config, {
             abi,
-            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+            address: "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C",
             functionName: "projects",
             args: [i],
             chainId: chainId
@@ -65,7 +65,7 @@ export const withdrawFunds = async (selectedprojectId: number) => {
     try {
         await writeContract(config, {
             abi,
-            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+            address: "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C",
             functionName: "withdrawFunds",
             args: [selectedprojectId]
         });
@@ -83,14 +83,14 @@ export const contribute = async (
     try {
         await writeContract(config, {
             abi: abi,
-            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+            address: "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C",
             functionName: "contribute",
             args: [selectedprojectId],
             value: parseEther(contributionAmount),
         });
-
+        toast.success("Contribution successful");
     } catch (error) {
-        toast.error("An error occurred during the transaction.");
+        toast.info("Transaction Rejected");
         console.error(error);
     }
 };
@@ -99,7 +99,7 @@ export const swap = async () => {
     try {
         await writeContract(config, {
             abi: abi,
-            address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+            address: "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C",
             functionName: "swapTokensForETH",
             args: [],
         })

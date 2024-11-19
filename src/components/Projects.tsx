@@ -15,7 +15,7 @@ interface Project {
   title: string;
   description: string;
   totalSupply: bigint;
-  image: string;
+  imageUrl: string;
   ethRaised: bigint;
   liquidityPoolAddress: string;
   owner: string;
@@ -42,6 +42,7 @@ function ProjectsPage({ selectedChain }: ProjectProps) {
         const fetchedProjects = await getAllProjects(selectedChain); // Pass selectedChain here
         setProjects(fetchedProjects);
         setFilteredProjects(fetchedProjects);
+        console.log(fetchedProjects);
       } catch (error) {
         toast.info("No projects found");
         setProjects([]);
@@ -109,7 +110,6 @@ function ProjectsPage({ selectedChain }: ProjectProps) {
     if (selectedProject) {
       try {
         await contribute(selectedProject.id, contributionAmount);
-        toast.success("Contribution successful");
       } catch (error) {
         console.error(error);
       }
@@ -148,7 +148,7 @@ function ProjectsPage({ selectedChain }: ProjectProps) {
                 className="bg-gray-800 rounded-xl overflow-hidden shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
               >
                 <img
-                  src={`https://ipfs.io/ipfs/${project.image}`}
+                  src={`https://ipfs.io/ipfs/${project.imageUrl}`}
                   alt={project.title}
                   className="w-full h-48 object-cover"
                 />

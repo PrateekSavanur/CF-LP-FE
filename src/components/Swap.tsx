@@ -8,12 +8,19 @@ import erc20Abi from "../Web3Helpers/ERC20_ABI";
 import { getAccount } from "wagmi/actions";
 import { parseEther } from "viem";
 
+interface SwapData {
+  fromToken: `0x${string}`;
+  amount: string;
+  minEthOut: string;
+}
+
 function SwapTokens() {
-  const [swapData, setSwapData] = useState({
-    fromToken: "",
+  const [swapData, setSwapData] = useState<SwapData>({
+    fromToken: "0x",
     amount: "",
-    minEthOut: "",
+    minEthOut: "0",
   });
+  const [tokenAddress, setTokenAddress] = useState<string>(swapData.fromToken);
 
   const { writeContract: approveWrite, data: approveHash } = useWriteContract();
   const { writeContract: swapWrite } = useWriteContract();
@@ -50,11 +57,11 @@ function SwapTokens() {
     try {
       // Approve contract to transfer tokens on behalf of the user
       approveWrite({
-        address: swapData.fromToken as `0x${string}`, // Token address
+        address: swapData.fromToken, // Token address
         abi: erc20Abi,
         functionName: "approve",
         args: [
-          "0x64d669396464227E00653E2235272a0Ba6A67843",
+          "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C", // Swap contract address
           parseEther(swapData.amount),
         ],
       });
@@ -68,7 +75,7 @@ function SwapTokens() {
   const handleSwap = async () => {
     try {
       swapWrite({
-        address: "0x64d669396464227E00653E2235272a0Ba6A67843",
+        address: "0x5a2b6235eEEc4Ee70f41Ce35C7C2791dF77D879C",
         abi: swapAbi,
         functionName: "swapTokensForETH",
         args: [
@@ -84,90 +91,89 @@ function SwapTokens() {
     }
   };
 
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-gray-800 via-gray-900 to-black py-12 px-4">
-      <h1 className="text-4xl font-extrabold text-white mb-8">
-        Swap Tokens for ETH
-      </h1>
+  const handleTokenAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputAddress = e.target.value;
 
-      <div className="w-full max-w-lg bg-gray-800 shadow-xl rounded-lg p-8 space-y-6">
-        <div className="space-y-4">
-          <div className="flex flex-col">
-            <label className="text-lg font-semibold text-gray-300 mb-2">
+    // Validate if the input address is a valid Ethereum address
+    if (/^0x[a-fA-F0-9]{40}$/.test(inputAddress)) {
+      setTokenAddress(inputAddress);
+      setSwapData((prevData) => ({
+        ...prevData,
+        fromToken: inputAddress as `0x${string}`,
+      }));
+    } else {
+      toast.error("Invalid Ethereum address ⚠️", { theme: "dark" });
+    }
+  };
+
+  return (
+    <>
+      <div className="text-white text-center bg-gradient-to-r from-purple-600 to-indigo-600 p-8 rounded-lg shadow-2xl">
+        <h1 className="text-3xl font-bold mb-6 text-yellow-200">
+          Swap Tokens Anytime, Anywhere!
+        </h1>
+        <div className="bg-gradient-to-r from-gray-800 to-black p-6 rounded-lg shadow-lg max-w-md mx-auto">
+          <div className="mb-6">
+            <label htmlFor="tokenAddress" className="text-gray-400 text-lg">
               Token Address
             </label>
             <input
+              id="tokenAddress"
               type="text"
-              value={swapData.fromToken}
-              onChange={(e) =>
-                setSwapData({ ...swapData, fromToken: e.target.value })
-              }
-              className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-purple-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
+              className="bg-transparent text-2xl w-full outline-none p-3 mb-4 border-b-2 border-blue-500 focus:ring-2 focus:ring-blue-400 transition"
+              value={tokenAddress}
+              onChange={handleTokenAddressChange}
               placeholder="Enter token address"
-              required
             />
           </div>
-
-          <div className="flex flex-col">
-            <label className="text-lg font-semibold text-gray-300 mb-2">
-              Amount
-            </label>
-            <input
-              type="number"
-              value={swapData.amount}
-              onChange={(e) =>
-                setSwapData({ ...swapData, amount: e.target.value })
-              }
-              className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-teal-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter amount to swap"
-              required
-            />
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-400">Amount to Swap</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-700 p-4 rounded-lg">
+              <input
+                type="number"
+                className="bg-transparent text-2xl w-full outline-none text-white placeholder-gray-300"
+                placeholder="0"
+                value={swapData.amount}
+                onChange={(e) =>
+                  setSwapData({ ...swapData, amount: e.target.value })
+                }
+              />
+            </div>
           </div>
-
-          <div className="flex flex-col">
-            <label className="text-lg font-semibold text-gray-300 mb-2">
-              Min ETH Out
-            </label>
-            <input
-              type="number"
-              value={swapData.minEthOut}
-              onChange={(e) =>
-                setSwapData({ ...swapData, minEthOut: e.target.value })
-              }
-              className="w-full px-5 py-3 border-2 border-gray-600 rounded-lg focus:ring-4 focus:ring-teal-500 focus:outline-none placeholder-gray-400 text-white bg-gray-700 transition duration-300 ease-in-out"
-              placeholder="Enter minimum ETH output"
-              required
-            />
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-gray-400">Receive (ETH)</span>
+            </div>
+            <div className="flex justify-between items-center bg-gray-700 p-4 rounded-lg">
+              <input
+                type="number"
+                className="bg-transparent text-2xl w-full outline-none text-white placeholder-gray-300"
+                placeholder="0"
+              />
+              <span className="text-gray-400">ETH</span>
+            </div>
           </div>
-
           <button
+            className="bg-gradient-to-r from-green-500 to-green-700 text-white w-full py-3 rounded-lg hover:from-green-600 hover:to-green-800 transition"
             onClick={handleApprove}
-            disabled={isApproving || isApproved}
-            className={`w-full py-3 rounded-lg font-semibold text-white ${
-              isApproving || isApproved
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 to-teal-500 hover:from-purple-600 hover:to-teal-600"
-            } transition duration-300 ease-in-out`}
+            disabled={isApproving}
           >
-            {isApproving ? "Approving..." : isApproved ? "Approved" : "Approve"}
+            {isApproving ? "Approving..." : "Approve Token"}
           </button>
-
           <button
+            className="bg-gradient-to-r from-blue-500 to-blue-700 text-white w-full py-3 rounded-lg mt-4 hover:from-blue-600 hover:to-blue-800 transition"
             onClick={handleSwap}
             disabled={isApproving || !isApproved}
-            className={`w-full py-3 rounded-lg font-semibold text-white ${
-              isApproving || !isApproved
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-500 to-teal-500 hover:from-purple-600 hover:to-teal-600"
-            } transition duration-300 ease-in-out`}
           >
-            Swap Tokens
+            {isApproving ? "Swapping..." : "Swap Tokens"}
           </button>
         </div>
-
-        <ToastContainer />
       </div>
-    </div>
+
+      <ToastContainer />
+    </>
   );
 }
 

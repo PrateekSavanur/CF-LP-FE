@@ -3,6 +3,7 @@ import { ConnectKitButton } from "connectkit";
 import { useSwitchChain } from "wagmi";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Logo from "../Assets/Logo.png";
 
 interface NavbarProps {
   selectedChain: number;
@@ -21,14 +22,20 @@ function Navbar({ selectedChain, setSelectedChain }: NavbarProps) {
       <div className="fixed top-0 left-0 right-0 h-16 px-4 py-4 bg-gray-900 shadow-lg z-50">
         <Web3Provider>
           <div className="flex justify-between items-center h-full">
-            {/* Logo and Title */}
-            <div
-              onClick={() => {
-                navigate("/");
-              }}
-              className="text-xl font-bold text-white tracking-wide cursor-pointer"
-            >
-              CrowdFunding
+            <div className="flex items-center gap-2">
+              <img
+                src={Logo}
+                alt="FundSphere Logo"
+                className="h-8 w-auto rounded-lg"
+              />
+              <div
+                onClick={() => {
+                  navigate("/");
+                }}
+                className="text-xl font-bold text-white tracking-wide cursor-pointer"
+              >
+                FundSphere
+              </div>
             </div>
 
             <button
